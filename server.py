@@ -3,10 +3,10 @@ import sqlite3
 import datetime
 import toml
 import os
-import threading  # 引入 threading 模块
+import threading
 
 def parse_duration(duration_str):
-    """解析时间窗口字符串，例如 '1h', '30m', '2d'"""
+    """Parse the time window string, for example '1h', '30m', '2d'"""
     unit = duration_str[-1]
     value = int(duration_str[:-1])
     if unit == 'h':
@@ -18,12 +18,11 @@ def parse_duration(duration_str):
     elif unit == 'd':
         return datetime.timedelta(days=value)
     else:
-        raise ValueError(f"无法解析时间窗口：{duration_str}")
+        raise ValueError("Cannot parse duration: {}".format(duration_str))
 
-# 读取配置文件
 config_file = 'config.toml'
 if not os.path.exists(config_file):
-    raise FileNotFoundError("配置文件 config.toml 不存在。")
+    raise FileNotFoundError("config.toml not found.")
 
 config = toml.load(config_file)
 windows = config.get('windows', {})
@@ -31,7 +30,6 @@ windows = {k: parse_duration(v) for k, v in windows.items()}
 limits = config.get('limits', {})
 limits = {k: int(limits[k]) for k in windows.keys()}
 
-# 初始化数据库
 conn = sqlite3.connect('sqlite.db', check_same_thread=False)
 cursor = conn.cursor()
 cursor.execute('''
