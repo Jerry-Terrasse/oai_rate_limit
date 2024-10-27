@@ -3,6 +3,7 @@ import sqlite3
 import datetime
 import toml
 import os
+import threading  # 引入 threading 模块
 
 def parse_duration(duration_str):
     """解析时间窗口字符串，例如 '1h', '30m', '2d'"""
@@ -42,6 +43,8 @@ cursor.execute('''
 ''')
 conn.commit()
 
+lock = threading.Lock()
+
 app = FastAPI()
 
 @app.put("/")
@@ -49,11 +52,14 @@ def report(model: str):
     if model not in windows:
         raise HTTPException(status_code=400, detail="unknown model")
     timestamp = datetime.datetime.now()
-    cursor.execute(
-        "INSERT INTO sales (model, timestamp) VALUES (?, ?)",
-        (model, timestamp)
-    )
-    conn.commit()
+
+    with lock:
+        cursor.execute(
+            "INSERT INTO sales (model, timestamp) VALUES (?, ?)",
+            (model, timestamp)
+        )
+        conn.commit()
+
     return {'ok': True}
 
 @app.get("/")
@@ -63,13 +69,16 @@ def status(model: str):
     window = windows[model]
     end_time = datetime.datetime.now()
     start_time = end_time - window
-    cursor.execute(
-        "SELECT COUNT(*) FROM sales WHERE model = ? AND timestamp BETWEEN ? AND ?",
-        (model, start_time, end_time)
-    )
-    count = cursor.fetchone()[0]
+
+    with lock:
+        cursor.execute(
+            "SELECT COUNT(*) FROM sales WHERE model = ? AND timestamp BETWEEN ? AND ?",
+            (model, start_time, end_time)
+        )
+        count = cursor.fetchone()[0]
+
     return {
         "model": model,
-        "window": window,
+        "window": str(window),
         "remain": limits[model] - count
     }
