@@ -54,11 +54,11 @@ function updateStatusText() {
             payload = init.body || payload;
         }
 
-        console.log(`Request: ${method} ${url}`);
+        // console.log(`Request: ${method} ${url}`);
 
         if (method.toUpperCase() === 'POST') {
             if (url.endsWith("/backend-api/conversation")) {
-                console.log("Conversation Request");
+                // console.log("Conversation Request");
                 payload = JSON.parse(payload);
                 var model = payload.model;
 
@@ -88,7 +88,7 @@ function receiveMessage(event) { // Accept: type="status"
 window.addEventListener('message', receiveMessage, false);
 
 function updateAll() {
-    console.log("Update All");
+    // console.log("Update All");
     for (const model in window.model_status) {
         window.postMessage({ model: model, type: "get" }, window.location.origin);
     }
