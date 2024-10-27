@@ -23,12 +23,14 @@ This tool consists of a server based on FastAPI which will keep recording your u
 
 **Server**
 
-```bash
-git clone https://github.com/Jerry-Terrasse/oai_rate_limit.git
-cd oai_rate_limit
-pip install -r requirements.txt
-uvicorn main:app --port 8000
-```
+1. **Prepare**:
+    ```bash
+    git clone https://github.com/Jerry-Terrasse/oai_rate_limit.git
+    cd oai_rate_limit
+    pip install -r requirements.txt
+    ```
+2. **Configure**: check the `config.toml` and make sure the rate limits are up-to-date.
+3. **Run**: `uvicorn main:app --port 8000`
 
 <details>
 
@@ -52,9 +54,9 @@ var api_key = "<the_api_key>";
 
 **Browser-side script**
 
-1. Install [Tampermonkey](https://www.tampermonkey.net/) in your browser.
-2. Create a new script in Tampermonkey and copy the content of `frontend.js` to the script.
-3. Create a new script in Tampermonkey and copy the content of `backend.js` to the script.
-4. Replace the `api_url` in `backend.js` with your server address.
-5. (Optional) Replace the `api_key` in `backend.js` with your API key.
-6. Open the ChatGPT webpage and check the usage infomation beside the avatar.
+1. **Tampermonkey**: Install [Tampermonkey](https://www.tampermonkey.net/) in your browser.
+2. **Frontend Script**: Create a new script in Tampermonkey and copy the content of `frontend.js` to the script.
+3. **Backend Script**: Create a new script in Tampermonkey and copy the content of `backend.js` to the script.
+   -  Replace the `api_url` in `backend.js` with your server address.
+   -  (Optional) Replace the `api_key` in `backend.js` with your API key.
+4. **Enjoy**: Open the ChatGPT webpage and check the usage infomation beside the avatar.
