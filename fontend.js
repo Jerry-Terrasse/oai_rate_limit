@@ -101,6 +101,7 @@ function htmlToNode(html) {
     return template.content.firstChild;
 }
 function addFrontendItems() {
+    if (document.getElementById("crl_bar")) return true;
     var avatar = document.querySelector('button[data-testid="profile-button"]');
     if (!avatar) return false;
     var avatarContainer = avatar.parentElement;
@@ -113,8 +114,9 @@ function addFrontendItems() {
 }
 function tryAddFrontendItems() {
     if (addFrontendItems()) {
-        console.log("Frontend items added");
+        // console.log("Frontend items added");
         updateAll();
+        setTimeout(tryAddFrontendItems, 1000); // Refresh every 1s, and incase the bar is deleted
         return;
     }
     setTimeout(tryAddFrontendItems, 200);
