@@ -3,7 +3,7 @@
 // @namespace    http://terase.cn
 // @version      2024-10-26
 // @description  A tool to know your ChatGPT Rate Limit.
-// @author       You
+// @author       Terrasse
 // @match        https://chatgpt.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chatgpt.com
 // @sandbox      RAW
