@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         CRL Page
+// @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @version      2024-10-26
-// @description  aaa
+// @description  A tool to know your ChatGPT Rate Limit.
 // @author       You
 // @match        https://chatgpt.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chatgpt.com
@@ -55,10 +55,14 @@ var api_key = "<the_api_key>";
     };
 })(window.fetch);
 
-function receiveMessage(event) {
+function receiveMessage(event) { // Accept: type="status"
     if (event.origin !== window.location.origin) return;
+    if (event.data.type !== "status") return;
 
     console.log('MAIN_WORLD 收到消息:', event.data);
+    // set page title
+    var title = document.querySelector('title');
+    title.textContent = `Rate Limit: ${event.data.remain}`;
 }
 
 window.addEventListener('message', receiveMessage, false);

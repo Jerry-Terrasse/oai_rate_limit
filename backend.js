@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         CRL Content
+// @name         ChatGPT Rate Limit - Backend
 // @namespace    http://terase.cn
 // @version      2024-10-26
-// @description  aaa
+// @description  A tool to know your ChatGPT Rate Limit.
 // @author       You
 // @match        https://chatgpt.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=chatgpt.com
@@ -35,15 +35,16 @@ function updateStatus(model, opposite) {
         if (response.status === 200) {
             console.log("GET success: " + response.responseText);
             var remain = JSON.parse(response.responseText).remain;
-            opposite.postMessage({ model: model, remain: remain }, window.location.origin);
+            opposite.postMessage({ model: model, type: "status", remain: remain }, window.location.origin);
         } else {
             console.log(`GET Error: ${response.status} ${response.responseText}`);
         }
     });
 }
 
-function receiveMessage(event) {
+function receiveMessage(event) { // Accept: type="put" or "get"
     if (event.origin !== window.location.origin) return;
+    if (event.data.type === "status") return;
     console.log('ISOLATED_WORLD 收到消息:', event.data);
 
     var msg = event.data;
