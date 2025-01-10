@@ -1,9 +1,8 @@
 // ==UserScript==
 // @name         ChatGPT Rate Limit - Backend
 // @namespace    http://terase.cn
+// @license      MIT
 // @version      1.0
-// @updateURL    https://raw.githubusercontent.com/Jerry-Terrasse/oai_rate_limit/refs/heads/master/backend.js
-// @downloadURL  https://raw.githubusercontent.com/Jerry-Terrasse/oai_rate_limit/refs/heads/master/backend.js
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
