@@ -101,8 +101,8 @@ function htmlToNode(html) {
     template.innerHTML = html;
     return template.content.firstChild;
 }
-function addFrontendItems() {
-    if (document.getElementById("crl_bar")) return true;
+function addFrontendItems() { // return true if freshly added
+    if (document.getElementById("crl_bar")) return false;
     var avatar = document.querySelector('button[data-testid="profile-button"]');
     if (!avatar) return false;
     var avatarContainer = avatar.parentElement;
@@ -117,12 +117,10 @@ function tryAddFrontendItems() {
     if (addFrontendItems()) {
         // console.log("Frontend items added");
         updateAll();
-        setTimeout(tryAddFrontendItems, 60 * 1000); // Refresh every 60s, and incase the bar is deleted
-        return;
     }
-    setTimeout(tryAddFrontendItems, 200);
 }
 
-setTimeout(tryAddFrontendItems, 200);
+setInterval(updateAll, 60000); // Refresh every 60s
+setInterval(tryAddFrontendItems, 200); // Make sure the bar is always there
 
 })();
