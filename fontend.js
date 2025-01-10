@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      1.1
+// @version      1.2
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -117,7 +117,7 @@ function tryAddFrontendItems() {
     if (addFrontendItems()) {
         // console.log("Frontend items added");
         updateAll();
-        setTimeout(tryAddFrontendItems, 1000); // Refresh every 1s, and incase the bar is deleted
+        setTimeout(tryAddFrontendItems, 60 * 1000); // Refresh every 60s, and incase the bar is deleted
         return;
     }
     setTimeout(tryAddFrontendItems, 200);
