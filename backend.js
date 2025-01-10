@@ -1,7 +1,9 @@
 // ==UserScript==
 // @name         ChatGPT Rate Limit - Backend
 // @namespace    http://terase.cn
-// @version      2024-10-26
+// @version      1.0
+// @updateURL    https://raw.githubusercontent.com/Jerry-Terrasse/oai_rate_limit/refs/heads/master/backend.js
+// @downloadURL  https://raw.githubusercontent.com/Jerry-Terrasse/oai_rate_limit/refs/heads/master/backend.js
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -15,8 +17,18 @@
 (function() {
     'use strict';
 
-var api_url = "https://oai-rl.terase.cn";
-var api_key = "<the_api_key>";
+var api_url = localStorage.getItem('oairl_api_url');
+var api_key = localStorage.getItem('oairl_api_key');
+
+if (!api_url || !api_url.startsWith('https')) {
+    api_url = prompt('Please enter [ChatGPT Rate Limit] API URL');
+    localStorage.setItem('oairl_api_url', api_url);
+}
+
+if (!api_key || !/^[A-Za-z0-9]{32}$/.test(api_key)) {
+    api_key = prompt('Please enter [ChatGPT Rate Limit] API Key (32 characters)');
+    localStorage.setItem('oairl_api_key', api_key);
+}
 
 function requestAPI(model, method, onload) {
     var api = `${api_url}?model=${model}`;
