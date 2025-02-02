@@ -1,7 +1,7 @@
 [windows]
 o1 = '7d'
-o1-mini = '1d'
+o3-mini = '1d'
 
 [limits]
 o1 = 50
-o1-mini = 50
+o3-mini = 150
