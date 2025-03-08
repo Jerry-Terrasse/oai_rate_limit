@@ -22,7 +22,7 @@ window.model_status = {
 }
 window.devarious = {
     "o3-mini-high": "o3-mini",
-    "gpt-4-5": "gpt-4.5",
+    "gpt-4-5": "GPT-4.5",
 }
 
 function updateStatusText() {
