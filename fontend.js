@@ -18,7 +18,7 @@
 window.model_status = {
     "o1": -1,
     "o3-mini": -1,
-    "gpt-4.5": -1,
+    "GPT-4.5": -1,
 }
 window.devarious = {
     "o3-mini-high": "o3-mini",
