@@ -1,7 +1,9 @@
 [windows]
 o1 = '7d'
 o3-mini = '1d'
+gpt-4.5 = '7d'
 
 [limits]
 o1 = 50
 o3-mini = 150
+gpt-4.5 = 50
