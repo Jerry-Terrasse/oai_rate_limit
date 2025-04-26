@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      1.5
+// @version      1.6
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -16,12 +16,12 @@
     'use strict';
 
 window.model_status = {
-    "o1": -1,
-    "o3-mini": -1,
+    "o3": -1,
+    "o4-mini-high": -1,
+    "o4-mini": -1,
     "GPT-4.5": -1,
 }
 window.devarious = {
-    "o3-mini-high": "o3-mini",
     "gpt-4-5": "GPT-4.5",
 }
 
