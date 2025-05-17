@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Backend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      1.5
+// @version      1.7
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -48,7 +48,7 @@ function updateStatus(model, opposite) {
             var remain = JSON.parse(response.responseText).remain;
             opposite.postMessage({ model: model, type: "status", remain: remain }, window.location.origin);
         } else {
-            console.log(`GET Error: ${response.status} ${response.responseText}`);
+            console.log(`GET Error: ${response.status} ${response.responseText}, detail: ${response}`);
         }
     });
 }
@@ -65,13 +65,13 @@ function receiveMessage(event) { // Accept: type="put" or "get"
                 // console.log("PUT success: " + response.responseText);
                 updateStatus(msg.model, event.source);
             } else {
-                console.log(`PUT Error: ${response.status} ${response.responseText}`);
+                console.log(`PUT Error: ${response.status} ${response.responseText}, detail: ${response}`);
             }
         });
     } else if (msg.type == "get") {
         updateStatus(msg.model, event.source);
     } else {
-        console.log(`Unknown message type: ${msg.type}`);
+        console.log(`Unknown message type: ${msg.type}, msg: ${msg}, event: ${event}`);
     }
 }
 
