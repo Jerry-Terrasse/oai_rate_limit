@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Backend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      1.7
+// @version      1.8
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -48,14 +48,14 @@ function updateStatus(model, opposite) {
             var remain = JSON.parse(response.responseText).remain;
             opposite.postMessage({ model: model, type: "status", remain: remain }, window.location.origin);
         } else {
-            console.log(`GET Error: ${response.status} ${response.responseText}, detail: ${response}`);
+            console.log(`GET Error: ${response.status} ${response.responseText}`, response);
         }
     });
 }
 
 function receiveMessage(event) { // Accept: type="put" or "get"
     if (event.origin !== window.location.origin) return;
-    if (event.data.type === "status") return;
+    if (event.data.type !== "put" && event.data.type !== "get") return;
     // console.log('ISOLATED_WORLD 收到消息:', event.data);
 
     var msg = event.data;
@@ -65,13 +65,13 @@ function receiveMessage(event) { // Accept: type="put" or "get"
                 // console.log("PUT success: " + response.responseText);
                 updateStatus(msg.model, event.source);
             } else {
-                console.log(`PUT Error: ${response.status} ${response.responseText}, detail: ${response}`);
+                console.log(`PUT Error: ${response.status} ${response.responseText}`, response);
             }
         });
     } else if (msg.type == "get") {
         updateStatus(msg.model, event.source);
     } else {
-        console.log(`Unknown message type: ${msg.type}, msg: ${msg}, event: ${event}`);
+        console.log(`Unknown message type from fontend: ${msg.type}, msg: ${msg}, event: ${event}`, event);
     }
 }
 

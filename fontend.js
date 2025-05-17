@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      1.7
+// @version      1.8
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -90,7 +90,7 @@ function receiveMessage(event) { // Accept: type="status"
         status[msg.model] = msg.remain;
         updateStatusText();
     } else {
-        console.log(`Unknown model: ${msg.model}, msg: ${msg}, event: ${event}`);
+        console.log(`Unknown model from backend: ${msg.model}, msg: ${msg}, event: ${event}`, event);
     }
 }
 
