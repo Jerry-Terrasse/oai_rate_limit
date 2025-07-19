@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      1.8
+// @version      2.0
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -23,17 +23,28 @@ window.model_status = {
 }
 window.devarious = {
     "gpt-4-5": "GPT-4.5",
+    "4.5": "GPT-4.5",
 }
 
 function updateStatusText() {
     var status = window.model_status;
-    var text = "";
-    for (const model in status) {
-        text += `${model}: ${status[model]}; `;
-    }
-    text = text.slice(0, -2);
+    // var text = "";
+    // for (const model in status) {
+    //     text += `${model}: ${status[model]}; `;
+    // }
+    // text = text.slice(0, -2);
 
     var bar = document.getElementById("crl_bar");
+    var model = bar.previousElementSibling.innerText;
+    if (model in window.devarious) {
+        model = window.devarious[model];
+    }
+    var remain = "∞";
+    if (model in status) {
+        remain = `${status[model]}`;
+    }
+    var text = ` [${remain}]`;
+
     if (bar) {
         bar.innerText = text;
     }
@@ -110,15 +121,21 @@ function htmlToNode(html) {
     return template.content.firstChild;
 }
 function addFrontendItems() { // return true if freshly added
-    if (document.getElementById("crl_bar")) return false;
-    var avatar = document.querySelector('button[data-testid="profile-button"]');
-    if (!avatar) return false;
-    var avatarContainer = avatar.parentElement;
+    if (document.getElementById("crl_bar")) {
+        updateStatusText();
+        return false;
+    }
+    // var avatar = document.querySelector('button[data-testid="profile-button"]');
+    // if (!avatar) return false;
+    // var avatarContainer = avatar.parentElement;
 
-    var displayBar = htmlToNode('<div id="crl_bar">loading...</div>')
+    var model_bar = document.querySelector('#page-header button div');
+    if (!model_bar) return false;
+
+    var displayBar = htmlToNode('<span id="crl_bar" class="text-token-text-tertiary"> [...]</span>')
     // var refreshButton = htmlToNode('<button onclick="updateAll();"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/></svg></button>')
     
-    avatarContainer.prepend(displayBar);
+    model_bar.append(displayBar);
     return true;
 }
 function tryAddFrontendItems() {
