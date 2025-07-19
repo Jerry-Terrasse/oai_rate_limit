@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      2.0
+// @version      2.1
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -147,5 +147,94 @@ function tryAddFrontendItems() {
 
 setInterval(updateAll, 60000); // Refresh every 60s
 setInterval(tryAddFrontendItems, 200); // Make sure the bar is always there
+
+
+// ====== Model Switcher ======
+
+var mapping = {
+    '1': 'GPT-4.1', // 1
+    '3': 'o3', // 3
+    '4': 'o4-mini-high', // 4
+};
+
+function simulateClick(element) {
+    const ev = new PointerEvent('pointerdown', { bubbles: true });
+    element.dispatchEvent(ev);
+    const ev2 = new PointerEvent('pointerup', { bubbles: true });
+    element.dispatchEvent(ev2);
+}
+
+function getModelTargets() {
+    // document.querySelectorAll("div[role=menuitem]")[0].querySelector("span").textContent
+    const menuItems = document.querySelectorAll('div[role=menuitem]');
+    const targets = {};
+    for (const item of menuItems) {
+        const span = item.querySelector('span');
+        if (span) {
+            targets[span.textContent] = item;
+        }
+    }
+    return targets;
+}
+
+function switchModel(target) {
+    window.switch_state = 'DOING';
+
+    // expand the model switcher
+    const model_bar = document.querySelector('#page-header button');
+    simulateClick(model_bar);
+    
+    // try to switch
+    const do_switch = setInterval(() => {
+        if (window.switch_state !== 'DOING') {
+            clearInterval(do_switch);
+            return;
+        }
+        const targets = getModelTargets();
+        // console.log(`do_switch: ${targets}`);
+        if (target in targets) {
+            // simulateClick(targets[target]);
+            targets[target].click();
+            console.log(`Switched to ${target}`);
+            window.switch_state = 'DONE';
+            clearInterval(do_switch);
+        }
+    }, 100);
+
+    // try to expand the submenu
+    const do_expand = setInterval(() => {
+        if (window.switch_state !== 'DOING') {
+            clearInterval(do_expand);
+            return;
+        }
+        const submenu = document.querySelector('div[role=menuitem] div.grow');
+        if (submenu) {
+            // simulateClick(submenu);
+            submenu.click();
+            clearInterval(do_expand);
+        }
+    }, 100);
+
+    // after 1s, if not done, fail
+    setTimeout(() => {
+        if (window.switch_state !== 'DONE') {
+            console.log(`Failed to switch to ${target}`);
+            window.switch_state = 'DONE';
+        }
+    }, 1000);
+}
+
+// monitor Ctrl+Shift+number
+window.addEventListener('keydown', function(e) {
+    // console.log(e);
+    if ((e.ctrlKey || e.metaKey) && e.altKey && e.key in mapping) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = mapping[e.key];
+        console.log(`Switching to ${target}`);
+        switchModel(target);
+    }
+});
 
 })();
