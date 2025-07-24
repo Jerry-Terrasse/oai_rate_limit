@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      2.2
+// @version      2.3
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -74,7 +74,7 @@ function updateStatusText() {
         // console.log(`Request: ${method} ${url}`);
 
         if (method.toUpperCase() === 'POST') {
-            if (url.endsWith("/backend-api/conversation")) {
+            if (url.endsWith("/backend-api/f/conversation")) {
                 // console.log("Conversation Request");
                 payload = JSON.parse(payload);
                 var model = payload.model;
