@@ -4,7 +4,7 @@ o4-mini-high = '1d'
 o4-mini = '1d'
 "GPT-4.5" = '7d'
 "GPT-5" = '3h'
-"GPT-5-Thinking" = '7d
+"GPT-5-Thinking" = '7d'
 
 [limits]
 o3 = 100
