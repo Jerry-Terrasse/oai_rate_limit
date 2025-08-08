@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      2.4
+// @version      2.5
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -32,6 +32,15 @@ window.devarious = {
     "5 Thinking": "GPT-5-Thinking",
 }
 
+function getCurrentModel() {
+    var bar = document.getElementById("crl_bar");
+    var model = bar.previousElementSibling.innerText;
+    if (model in window.devarious) {
+        model = window.devarious[model];
+    }
+    return model;
+}
+
 function updateStatusText() {
     var status = window.model_status;
     // var text = "";
@@ -40,17 +49,14 @@ function updateStatusText() {
     // }
     // text = text.slice(0, -2);
 
-    var bar = document.getElementById("crl_bar");
-    var model = bar.previousElementSibling.innerText;
-    if (model in window.devarious) {
-        model = window.devarious[model];
-    }
+    var model = getCurrentModel();
     var remain = "∞";
     if (model in status) {
         remain = `${status[model]}`;
     }
     var text = ` [${remain}]`;
-
+    
+    var bar = document.getElementById("crl_bar");
     if (bar) {
         bar.innerText = text;
     }
@@ -176,9 +182,10 @@ setInterval(tryAddFrontendItems, 200); // Make sure the bar is always there
 // ====== Model Switcher ======
 
 var mapping = {
-    '1': 'GPT-4.1', // 1
-    '3': 'o3', // 3
-    '4': 'o4-mini-high', // 4
+    // '1': 'GPT-4.1', // 1
+    // '3': 'o3', // 3
+    // '4': 'o4-mini-high', // 4
+    '5': ['GPT-5', 'GPT-5 Thinking'],
 };
 
 function simulateClick(element) {
@@ -248,6 +255,18 @@ function switchModel(target) {
     }, 1000);
 }
 
+function decideTarget(key) {
+    const model = mapping[key];
+    // if model is a list, toggle along with the list
+    if (Array.isArray(model)) {
+        // find the next
+        const current_model = getCurrentModel();
+        const index = model.indexOf(current_model);
+        return model[(index + 1) % model.length];
+    }
+    return model;
+}
+
 // monitor Ctrl+Shift+number
 window.addEventListener('keydown', function(e) {
     // console.log(e);
@@ -255,7 +274,7 @@ window.addEventListener('keydown', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        const target = mapping[e.key];
+        const target = decideTarget(e.key);
         console.log(`Switching to ${target}`);
         switchModel(target);
     }
