@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      2.6
+// @version      3.0
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -32,6 +32,67 @@ window.devarious = {
     "gpt-5-thinking": "GPT-5-Thinking",
     "5 Thinking": "GPT-5-Thinking",
     "Thinking": "GPT-5-Thinking",
+}
+
+function createTooltipHTML() {
+    // Management section
+    const managementItems = `
+        <dt class="text-token-text-tertiary col-span-2">Management</dt>
+        <dt>Remove API key</dt>
+        <dd class="text-token-text-secondary justify-self-end">Click Me 5x</dd>
+    `;
+    
+    // Model switching section
+    const shortcuts = [];
+    for (const [key, model] of Object.entries(mapping)) {
+        let description;
+        if (Array.isArray(model)) {
+            description = `Switch in ${model.join('/')}`;
+        } else {
+            description = `Switch to ${model}`;
+        }
+        shortcuts.push({ key: `Ctrl+Alt+${key}`, description });
+    }
+    
+    let shortcutItems = '<dt class="text-token-text-tertiary col-span-2">Model Switching</dt>';
+    shortcuts.forEach(shortcut => {
+        const keyParts = shortcut.key.split('+');
+        const kbdElements = keyParts.map(part => 
+            `<kbd><span class="min-w-[1em]">${part}</span></kbd>`
+        ).join('');
+        
+        shortcutItems += `
+            <dt>${shortcut.description}</dt>
+            <dd class="text-token-text-secondary justify-self-end">
+                <div class="inline-flex whitespace-pre *:inline-flex *:font-sans *:not-last:after:px-0.5 *:not-last:after:content-['+']">
+                    ${kbdElements}
+                </div>
+            </dd>
+        `;
+    });
+    
+    // Combine all sections
+    const header = `
+        <div class="ms-2.5 flex h-9 items-center font-semibold">
+            <h2 class="text-sm">ChatGPT Rate Limit</h2>
+        </div>
+    `;
+    
+    const contentList = `
+        <dl class="grid [grid-template-columns:minmax(0,1fr)_max-content] gap-x-6 gap-y-3 px-2.5 pb-2">
+            ${managementItems}
+            ${shortcutItems}
+        </dl>
+    `;
+    
+    const tooltipClasses = "z-50 max-w-xs rounded-2xl popover bg-token-main-surface-primary dark:bg-[#353535] shadow-long py-1.5 select-none text-sm";
+    
+    return `
+        <div id="crl_tooltip" class="${tooltipClasses}" style="position: fixed;">
+            ${header}
+            ${contentList}
+        </div>
+    `.replace(/\s+/g, ' ').trim();
 }
 
 function getCurrentModel() {
@@ -167,9 +228,50 @@ function addFrontendItems() { // return true if freshly added
     var displayBar = htmlToNode('<span id="crl_bar" class="text-token-text-tertiary"> [...]</span>')
     // var refreshButton = htmlToNode('<button onclick="updateAll();"><svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/></svg></button>')
     
+    // Add hover tooltip
+    addHoverTooltip(displayBar);
+    
     model_bar.append(displayBar);
     return true;
 }
+function addHoverTooltip(element) {
+    let hoverTimer = null;
+    let tooltip = null;
+    let tooltipHTML = createTooltipHTML();
+
+    element.addEventListener('mouseenter', function() {
+        hoverTimer = setTimeout(() => {
+            // Create tooltip
+            tooltip = htmlToNode(tooltipHTML);
+            
+            if (!tooltip) {
+                console.error('Failed to create tooltip');
+                return;
+            }
+            
+            // Position tooltip
+            const rect = element.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.top = (rect.bottom + 5) + 'px';
+            
+            document.body.appendChild(tooltip);
+            console.log('Tooltip shown');
+        }, 1000);
+    });
+    
+    element.addEventListener('mouseleave', function() {
+        if (hoverTimer) {
+            clearTimeout(hoverTimer);
+            hoverTimer = null;
+        }
+        if (tooltip) {
+            tooltip.remove();
+            tooltip = null;
+            console.log('Tooltip hidden');
+        }
+    });
+}
+
 function tryAddFrontendItems() {
     if (addFrontendItems()) {
         // console.log("Frontend items added");
