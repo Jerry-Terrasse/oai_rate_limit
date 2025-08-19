@@ -85,7 +85,7 @@ function createTooltipHTML() {
         </dl>
     `;
     
-    const tooltipClasses = "z-50 max-w-xs rounded-2xl popover bg-token-main-surface-primary dark:bg-[#353535] shadow-long py-1.5 select-none text-sm";
+    const tooltipClasses = "z-50 max-w-xs rounded-2xl popover bg-token-main-surface-primary dark:bg-[#353535] shadow-long py-1.5 px-1.5 select-none text-sm";
     
     return `
         <div id="crl_tooltip" class="${tooltipClasses}" style="position: fixed;">
@@ -234,28 +234,49 @@ function addFrontendItems() { // return true if freshly added
     model_bar.append(displayBar);
     return true;
 }
+function showTooltip(targetElement) {
+    // Hide existing tooltip first
+    hideTooltip();
+    
+    const tooltipHTML = createTooltipHTML();
+    const tooltip = htmlToNode(tooltipHTML);
+    
+    if (!tooltip) {
+        console.error('Failed to create tooltip');
+        return;
+    }
+    
+    // Position tooltip
+    const rect = targetElement.getBoundingClientRect();
+    tooltip.style.left = rect.left + 'px';
+    tooltip.style.top = (rect.bottom + 5) + 'px';
+    
+    document.body.appendChild(tooltip);
+    console.log('Tooltip shown');
+}
+
+function hideTooltip() {
+    const tooltip = document.getElementById('crl_tooltip');
+    if (tooltip) {
+        tooltip.remove();
+        console.log('Tooltip hidden');
+    }
+}
+
+// Global click handler for tooltip
+function handleGlobalClick(event) {
+    const tooltip = document.getElementById('crl_tooltip');
+    if (tooltip && !tooltip.contains(event.target)) {
+        hideTooltip();
+    }
+}
+
 function addHoverTooltip(element) {
     let hoverTimer = null;
-    let tooltip = null;
-    let tooltipHTML = createTooltipHTML();
 
     element.addEventListener('mouseenter', function() {
         hoverTimer = setTimeout(() => {
-            // Create tooltip
-            tooltip = htmlToNode(tooltipHTML);
-            
-            if (!tooltip) {
-                console.error('Failed to create tooltip');
-                return;
-            }
-            
-            // Position tooltip
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = rect.left + 'px';
-            tooltip.style.top = (rect.bottom + 5) + 'px';
-            
-            document.body.appendChild(tooltip);
-            console.log('Tooltip shown');
+            showTooltip(element);
         }, 1000);
     });
     
@@ -264,11 +285,7 @@ function addHoverTooltip(element) {
             clearTimeout(hoverTimer);
             hoverTimer = null;
         }
-        if (tooltip) {
-            tooltip.remove();
-            tooltip = null;
-            console.log('Tooltip hidden');
-        }
+        hideTooltip();
     });
 }
 
@@ -384,7 +401,7 @@ function decideTarget(key) {
     return model;
 }
 
-// monitor Ctrl+Shift+number
+// monitor Ctrl+Shift+number and Ctrl+/
 window.addEventListener('keydown', function(e) {
     // console.log(e);
     if ((e.ctrlKey || e.metaKey) && e.altKey && e.key in mapping) {
@@ -395,6 +412,25 @@ window.addEventListener('keydown', function(e) {
         console.log(`Switching to ${target}`);
         switchModel(target);
     }
+    
+    // Show tooltip on Ctrl+/
+    if (e.ctrlKey && e.key === '/') {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const crlBar = document.getElementById('crl_bar');
+        if (crlBar) {
+            const existingTooltip = document.getElementById('crl_tooltip');
+            if (existingTooltip) {
+                hideTooltip();
+            } else {
+                showTooltip(crlBar);
+            }
+        }
+    }
 });
+
+// Add global click listener for tooltip
+document.addEventListener('click', handleGlobalClick, true);
 
 })();
