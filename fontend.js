@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      2.5
+// @version      2.6
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -16,9 +16,9 @@
     'use strict';
 
 window.model_status = {
-    // "o3": -1,
+    "o3": -1,
     // "o4-mini-high": -1,
-    // "o4-mini": -1,
+    "o4-mini": -1,
     // "GPT-4.5": -1,
     "GPT-5": -1,
     "GPT-5-Thinking": -1,
@@ -28,8 +28,10 @@ window.devarious = {
     // "4.5": "GPT-4.5",
     "gpt-5": "GPT-5",
     "5": "GPT-5",
+    "Auto": "GPT-5",
     "gpt-5-thinking": "GPT-5-Thinking",
     "5 Thinking": "GPT-5-Thinking",
+    "Thinking": "GPT-5-Thinking",
 }
 
 function getCurrentModel() {
@@ -176,16 +178,24 @@ function tryAddFrontendItems() {
 }
 
 setInterval(updateAll, 60000); // Refresh every 60s
-setInterval(tryAddFrontendItems, 200); // Make sure the bar is always there
+setTimeout(() => {
+    setInterval(tryAddFrontendItems, 200); // Make sure the bar is always there
+}, 3000); // Wait for the page to load
 
 
 // ====== Model Switcher ======
 
 var mapping = {
-    // '1': 'GPT-4.1', // 1
-    // '3': 'o3', // 3
-    // '4': 'o4-mini-high', // 4
-    '5': ['GPT-5', 'GPT-5 Thinking'],
+    '1': 'GPT-4.1', // 1
+    '3': 'o3', // 3
+    '4': 'o4-mini', // 4
+    '5': ['GPT-5', 'GPT-5-Thinking'], // 5, use name after devarious
+    // '5': [
+    //     ['GPT-5', 'Auto'],
+    //     ['GPT-5 Thinking', 'Thinking'],
+    // ],
+    'f': 'Fast',
+    'm': 'Thinking mini',
 };
 
 function simulateClick(element) {
@@ -202,7 +212,11 @@ function getModelTargets() {
     for (const item of menuItems) {
         const span = item.querySelector('span');
         if (span) {
-            targets[span.textContent] = item;
+            let text = span.textContent;
+            if (text in window.devarious) {
+                text = window.devarious[text];
+            }
+            targets[text] = item;
         }
     }
     return targets;
@@ -238,7 +252,8 @@ function switchModel(target) {
             clearInterval(do_expand);
             return;
         }
-        const submenu = document.querySelector('div[role=menuitem] div.grow');
+        const submenu = document.querySelector('div[role=menuitem][data-has-submenu] div.grow');
+        // console.log(`do_expand: ${submenu.textContent}`);
         if (submenu) {
             // simulateClick(submenu);
             submenu.click();
