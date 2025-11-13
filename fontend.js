@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      3.1
+// @version      3.2
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -24,15 +24,28 @@ window.model_status = {
     "GPT-5-Thinking": -1,
 }
 window.devarious = {
-    // "gpt-4-5": "GPT-4.5",
-    // "4.5": "GPT-4.5",
+    // names in API
     "gpt-5": "GPT-5",
-    "5": "GPT-5",
-    "Auto": "GPT-5",
+    "gpt-5.1": "GPT-5",
+    "gpt-5-instant": "GPT-5",
+    "gpt-5-1-instant": "GPT-5",
     "gpt-5-thinking": "GPT-5-Thinking",
+    "gpt-5-1-thinking": "GPT-5-Thinking",
+
+    // names in switch bar
+    "5": "GPT-5",
+    "5.1": "GPT-5",
+    "5 Instant": "GPT-5",
+    "5.1 Instant": "GPT-5",
     "5 Thinking": "GPT-5-Thinking",
+    "5.1 Thinking": "GPT-5-Thinking",
+
+    // names in switch panel
+    "Auto": "GPT-5",
+    "Instant": "Instant", // a standalone mode
     "Thinking": "GPT-5-Thinking",
 }
+// names after devarious: [GPT-5, GPT-5-Thinking]
 
 function createTooltipHTML() {
     // Management section
@@ -313,7 +326,7 @@ var mapping = {
     //     ['GPT-5', 'Auto'],
     //     ['GPT-5 Thinking', 'Thinking'],
     // ],
-    'f': 'Fast',
+    'f': 'Instant',
     'm': 'Thinking mini',
 };
 

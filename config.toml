@@ -11,5 +11,5 @@ o3 = 100
 o4-mini-high = 100
 o4-mini = 300
 "GPT-4.5" = 15
-"GPT-5" = 80
-"GPT-5-Thinking" = 200
+"GPT-5" = 160
+"GPT-5-Thinking" = 3000
