@@ -2,7 +2,7 @@
 // @name         ChatGPT Rate Limit - Frontend
 // @namespace    http://terase.cn
 // @license      MIT
-// @version      3.2
+// @version      3.3
 // @description  A tool to know your ChatGPT Rate Limit.
 // @author       Terrasse
 // @match        https://chatgpt.com/*
@@ -336,6 +336,18 @@ function simulateClick(element) {
     const ev2 = new PointerEvent('pointerup', { bubbles: true });
     element.dispatchEvent(ev2);
 }
+function simulateArrowRight(element) {
+    element.focus();
+
+    const ev = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        code: 'ArrowRight',
+        keyCode: 39,
+        which: 39,
+        bubbles: true,
+    });
+    element.dispatchEvent(ev);
+}
 
 function getModelTargets() {
     // document.querySelectorAll("div[role=menuitem]")[0].querySelector("span").textContent
@@ -388,7 +400,8 @@ function switchModel(target) {
         // console.log(`do_expand: ${submenu.textContent}`);
         if (submenu) {
             // simulateClick(submenu);
-            submenu.click();
+            // submenu.click();
+            simulateArrowRight(submenu);
             clearInterval(do_expand);
         }
     }, 100);
@@ -445,5 +458,16 @@ window.addEventListener('keydown', function(e) {
 
 // Add global click listener for tooltip
 document.addEventListener('click', handleGlobalClick, true);
+
+// debugging tools
+function debugModelBar() {
+    // expand the model switcher
+    const model_bar = getModelBarFlexible();
+    // simulateClick(model_bar);
+    const ev = new PointerEvent('pointerdown', { bubbles: true });
+    model_bar.dispatchEvent(ev);
+    // no pointerup event to keep it expanded
+}
+window.debugModelBar = debugModelBar;
 
 })();
