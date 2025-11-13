@@ -327,7 +327,7 @@ var mapping = {
     //     ['GPT-5 Thinking', 'Thinking'],
     // ],
     'f': 'Instant',
-    'm': 'Thinking mini',
+    'm': 'GPT-5 Thinking mini',
 };
 
 function simulateClick(element) {
